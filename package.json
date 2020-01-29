@@ -1,12 +1,12 @@
 {
-  "name": "chrome-aws-lambda",
-  "private": false,
-  "version": "2.0.2",
+  "name": "@payfit/chrome-aws-lambda",
+  "private": true,
+  "version": "1.0.0",
   "author": {
-    "name": "Alix Axel"
+    "name": "payfit-tech"
   },
   "license": "MIT",
-  "description": "Chromium Binary for AWS Lambda and Google Cloud Functions",
+  "description": "",
   "main": "source/index.js",
   "typings": "source/index.d.ts",
   "files": [
@@ -14,7 +14,7 @@
     "source"
   ],
   "engines": {
-    "node": ">= 8.10"
+    "node": ">= 10"
   },
   "scripts": {
     "postversion": "git push && git push --tags && npm publish"
@@ -28,23 +28,10 @@
   "peerDependencies": {
     "puppeteer-core": "2.0.x"
   },
-  "bugs": {
-    "url": "https://github.com/alixaxel/chrome-aws-lambda/issues"
-  },
-  "homepage": "https://github.com/alixaxel/chrome-aws-lambda",
   "repository": {
     "type": "git",
-    "url": "git://github.com/alixaxel/chrome-aws-lambda.git"
+    "url": "git@github.com:PayFit/chrome-aws-lambda.git"
   },
-  "keywords": [
-    "aws",
-    "browser",
-    "chrome",
-    "chromium",
-    "lambda",
-    "puppeteer",
-    "serverless"
-  ],
   "prettier": {
     "arrowParens": "always",
     "bracketSpacing": true,
