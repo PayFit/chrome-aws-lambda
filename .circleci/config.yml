@@ -1,0 +1,43 @@
+version: 2.1
+
+references:
+  image: &image
+    docker:
+      - image: circleci/node:12.14.1
+
+jobs:
+  install_dependencies:
+    <<: *image
+    steps:
+      - attach_workspace:
+          at: /home/circleci/project
+      - checkout
+      - run: yarn install --frozen-lockfile
+      - persist_to_workspace:
+          root: /home/circleci/project
+          paths:
+            - './'
+      - run: ls
+      - run: pwd
+  publish:
+    <<: *image
+    steps:
+      - attach_workspace:
+          at: /home/circleci/project
+      - run: ls
+      - run: pwd
+      - run: yarn publish
+
+workflows:
+  version: 2
+  test_publish:
+    jobs:
+      - install_dependencies:
+          context: GLOBAL_ORG
+      - publish:
+          context: GLOBAL_ORG
+          requires:
+            - install_dependencies
+          filters:
+            branches:
+              only: master
