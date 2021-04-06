@@ -1,11 +1,14 @@
 let Super = null;
 
 try {
-  Super = require('puppeteer/lib/FrameManager').Frame;
+  Super = require('puppeteer/lib/cjs/puppeteer/common/FrameManager').Frame;
 } catch (error) {
-  Super = require('puppeteer-core/lib/FrameManager').Frame;
+  Super = require('puppeteer-core/lib/cjs/puppeteer/common/FrameManager').Frame;
 }
 
+/**
+ * Returns the total number of elements that match the selector.
+ */
 Super.prototype.count = function (selector) {
   return this.evaluate(
     (selector) => {
@@ -15,6 +18,9 @@ Super.prototype.count = function (selector) {
   );
 };
 
+/**
+ * Checks whether at least one element matching the selector exists.
+ */
 Super.prototype.exists = function (selector) {
   return this.evaluate(
     (selector) => {
@@ -24,7 +30,10 @@ Super.prototype.exists = function (selector) {
   );
 };
 
-Super.prototype.fill = function (form, data, heuristic = 'name') {
+/**
+ * Fills a `form` with a variable number of inputs and returns its filled state.
+ */
+Super.prototype.fill = function (form, data, heuristic = 'css') {
   return this.evaluate(
     (form, data, heuristic = 'name') => {
       form = document.querySelector(form);
@@ -103,9 +112,9 @@ Super.prototype.fill = function (form, data, heuristic = 'name') {
                 }
               }
             } else if (element.isContentEditable === true) {
-              element.textContent = value;
+              result[key].push(element.textContent = value);
             } else {
-              element.value = value;
+              result[key].push(element.value = value);
             }
 
             for (let trigger of ['input', 'change']) {
@@ -132,7 +141,10 @@ Super.prototype.fill = function (form, data, heuristic = 'name') {
   );
 };
 
-Super.prototype.number = function (selector, decimal = null, index = null, property = 'textContent') {
+/**
+ * Returns normalized number(s) found in the given selector.
+ */
+Super.prototype.number = function (selector, decimal = '.', index = null, property = 'textContent') {
   return this.$eval(
     selector,
     (element, decimal, index, property) => {
@@ -142,6 +154,9 @@ Super.prototype.number = function (selector, decimal = null, index = null, prope
   );
 };
 
+/**
+ * Selects multiple `select` options by label and returns the values of the selection.
+ */
 Super.prototype.selectByLabel = function (selector, ...values) {
   for (let value of values) {
     console.assert(typeof value === 'string', `Values must be strings. Found value '${value}' of type '${typeof value}'.`);
@@ -181,6 +196,9 @@ Super.prototype.selectByLabel = function (selector, ...values) {
   );
 };
 
+/**
+ * Returns normalized text found in the given selector.
+ */
 Super.prototype.string = function (selector, property = 'textContent') {
   return this.$eval(
     selector,
@@ -191,16 +209,32 @@ Super.prototype.string = function (selector, property = 'textContent') {
   );
 };
 
+/**
+ * Waits for element to be present in DOM and to be visible.
+ */
 Super.prototype.waitUntilVisible = function (selector, timeout = null) {
-  return this.waitFor(selector, {
+  let options = {
     visible: true,
-    timeout: timeout || this._defaultNavigationTimeout,
-  });
+  };
+
+  if (Number.isFinite(timeout) === true) {
+    options.timeout = timeout;
+  }
+
+  return this.waitForSelector(selector, options);
 };
 
+/**
+ * Waits for element to not be found in the DOM or to be hidden.
+ */
 Super.prototype.waitWhileVisible = function (selector, timeout = null) {
-  return this.waitFor(selector, {
+  let options = {
     hidden: true,
-    timeout: timeout || this._defaultNavigationTimeout,
-  });
+  };
+
+  if (Number.isFinite(timeout) === true) {
+    options.timeout = timeout;
+  }
+
+  return this.waitForSelector(selector, options);
 };
